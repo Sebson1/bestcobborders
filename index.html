@@ -11,9 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* Fallback color */
-            background-color: #1a202c; /* gray-900 */
-            /* UPDATED: New football-focused background image */
+            background-color: #1a202c;
             background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
             background-size: cover;
             background-position: center;
@@ -28,10 +26,9 @@
         .custom-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
         }
-        /* Style for invalid (empty required) fields */
         input:invalid {
-            border-color: #ef4444; /* red-500 */
-            box-shadow: 0 0 0 2px #fecaca; /* red-200 */
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px #fecaca;
         }
     </style>
 </head>
@@ -46,8 +43,14 @@
 
         <main class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl custom-shadow p-6 sm:p-8">
             
+            <!-- UPDATED: Replaced dropdown with a calendar date picker -->
+            <div class="mb-8">
+                <label for="order-date-picker" class="block text-xl font-bold text-gray-900 dark:text-white mb-2">Select Order Date</label>
+                <input type="date" id="order-date-picker" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3 text-lg">
+            </div>
+
             <div id="menu-section" class="border-b border-gray-900/10 dark:border-white/10 pb-8 mb-8">
-                <h2 id="menu-day-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Today's Menu</h2>
+                <h2 id="menu-day-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Menu</h2>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
                     <div class="md:col-span-6">
                         <label for="menu-item" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Menu Item</label>
@@ -141,6 +144,7 @@
             const TAX_RATE = 0.08;
             let activeMenu = [];
 
+            const orderDatePicker = document.getElementById('order-date-picker');
             const menuDayTitle = document.getElementById('menu-day-title');
             const menuSection = document.getElementById('menu-section');
             const menuItemSelect = document.getElementById('menu-item');
@@ -159,17 +163,72 @@
             const customerPhoneInput = document.getElementById('customer-phone');
             const customerAddressInput = document.getElementById('customer-address');
 
+            function setupDatePicker() {
+                const today = new Date();
+                const todayString = today.toISOString().split('T')[0];
+                orderDatePicker.setAttribute('min', todayString);
+                orderDatePicker.value = todayString;
+            }
+
+            function updateActiveMenu(dateString) {
+                const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                // The date from the picker is YYYY-MM-DD, which can create timezone issues if not handled carefully.
+                // Creating the date as UTC prevents it from shifting a day.
+                const selectedDate = new Date(dateString + 'T00:00:00Z');
+                const dayName = dayNames[selectedDate.getUTCDay()];
+                
+                activeMenu = dailyMenus[dayName] || [];
+                
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                selectedDate.setHours(0,0,0,0);
+
+                let dayLabel = dayName;
+                if (today.getTime() === selectedDate.getTime()) {
+                    dayLabel = `Today (${dayName})`;
+                }
+
+                menuDayTitle.textContent = `Menu for ${dayLabel}`;
+                populateMenu();
+            }
+
             function populateMenu() {
-                menuItemSelect.innerHTML = '';
+                const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const selectedDate = new Date(orderDatePicker.value + 'T00:00:00Z');
+                const dayName = dayNames[selectedDate.getUTCDay()];
+
                 if (activeMenu.length === 0) {
-                    menuSection.innerHTML = `<h2 class="text-2xl font-bold text-center text-red-600">Sorry, we are closed today.</h2><p class="text-center text-gray-600">Please check back tomorrow!</p>`;
+                    menuSection.innerHTML = `<h2 id="menu-day-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Menu for ${dayName}</h2><h3 class="text-xl font-bold text-center text-red-600">Sorry, we are closed on this day.</h3><p class="text-center text-gray-600">Please select another day.</p>`;
                     return;
                 }
+                if (!document.getElementById('add-to-order-btn')) {
+                    menuSection.innerHTML = `
+                        <h2 id="menu-day-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">${menuDayTitle.textContent}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                            <div class="md:col-span-6">
+                                <label for="menu-item" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Menu Item</label>
+                                <select id="menu-item" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3"></select>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity</label>
+                                <input type="number" id="quantity" value="1" min="1" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3 text-center">
+                            </div>
+                            <div class="md:col-span-3">
+                                <button id="add-to-order-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                                    Add to Order
+                                </button>
+                            </div>
+                        </div>`;
+                    document.getElementById('add-to-order-btn').addEventListener('click', handleAddToOrder);
+                }
+                
+                const currentMenuItemSelect = document.getElementById('menu-item');
+                currentMenuItemSelect.innerHTML = '';
                 activeMenu.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = `${item.name} - GH₵${item.price.toFixed(2)}`;
-                    menuItemSelect.appendChild(option);
+                    currentMenuItemSelect.appendChild(option);
                 });
             }
 
@@ -230,8 +289,11 @@
             }
 
             function handleAddToOrder() {
-                const selectedItemId = parseInt(menuItemSelect.value);
-                const quantity = parseInt(quantityInput.value);
+                const currentMenuItemSelect = document.getElementById('menu-item');
+                if (!currentMenuItemSelect) return;
+                const selectedItemId = parseInt(currentMenuItemSelect.value);
+                const currentQuantityInput = document.getElementById('quantity');
+                const quantity = parseInt(currentQuantityInput.value);
                 if (isNaN(quantity) || quantity < 1) {
                     showNotification("Please enter a valid quantity.");
                     return;
@@ -243,7 +305,7 @@
                 } else {
                     order.push({ ...menuItem, quantity: quantity });
                 }
-                quantityInput.value = '1';
+                currentQuantityInput.value = '1';
                 renderOrder();
             }
 
@@ -262,6 +324,7 @@
                 const name = customerNameInput.value.trim();
                 const phone = customerPhoneInput.value.trim();
                 const address = customerAddressInput.value.trim();
+                const orderDate = orderDatePicker.value;
 
                 if (!name || !phone || !address) {
                     showNotification("Please fill in all your details.");
@@ -283,7 +346,8 @@
                     items: order,
                     subtotal: subtotal.toFixed(2),
                     tax: tax.toFixed(2),
-                    total: total.toFixed(2)
+                    total: total.toFixed(2),
+                    orderDate: orderDate
                 };
 
                 const backendUrl = 'https://bestcobb-api.onrender.com/api/place-order'; 
@@ -321,19 +385,18 @@
                     checkOrderMinimum();
                 }
             }
-
-            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const today = new Date();
-            const currentDayName = dayNames[today.getDay()];
             
-            activeMenu = dailyMenus[currentDayName] || [];
-            menuDayTitle.textContent = `Today's Menu (${currentDayName})`;
+            setupDatePicker();
+            updateActiveMenu(orderDatePicker.value);
+
+            orderDatePicker.addEventListener('change', (e) => {
+                updateActiveMenu(e.target.value);
+            });
             
             addToOrderBtn.addEventListener('click', handleAddToOrder);
             orderItemsContainer.addEventListener('click', handleRemoveItem);
             placeOrderBtn.addEventListener('click', handlePlaceOrder);
 
-            populateMenu();
             renderOrder();
         });
     </script>
