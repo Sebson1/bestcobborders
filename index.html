@@ -9,20 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Custom styles for the page */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #99f6e4; /* A teal fallback */
-            background-image: linear-gradient(to top right, #99f6e4, #67e8f9, #60a5fa); /* Gradient from teal to cyan to blue */
+            background-color: #99f6e4;
+            background-image: linear-gradient(to top right, #99f6e4, #67e8f9, #60a5fa);
         }
         .title-font {
             font-family: 'Poppins', sans-serif;
         }
-        /* Style for the notification banner */
         #notification {
             transition: opacity 0.5s, transform 0.5s;
         }
-        /* Custom shadow for a bit more pop */
         .custom-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
@@ -39,20 +36,22 @@
 
         <main class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl custom-shadow p-6 sm:p-8">
             
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end border-b border-gray-900/10 dark:border-white/10 pb-8 mb-8">
-                <div class="md:col-span-6">
-                    <label for="menu-item" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Menu Item</label>
-                    <select id="menu-item" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3">
-                        </select>
-                </div>
-                <div class="md:col-span-3">
-                    <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity</label>
-                    <input type="number" id="quantity" value="1" min="1" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3 text-center">
-                </div>
-                <div class="md:col-span-3">
-                    <button id="add-to-order-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
-                        Add to Order
-                    </button>
+            <div id="menu-section" class="border-b border-gray-900/10 dark:border-white/10 pb-8 mb-8">
+                <h2 id="menu-day-title" class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Today's Menu</h2>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                    <div class="md:col-span-6">
+                        <label for="menu-item" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Menu Item</label>
+                        <select id="menu-item" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3"></select>
+                    </div>
+                    <div class="md:col-span-3">
+                        <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity</label>
+                        <input type="number" id="quantity" value="1" min="1" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3 text-center">
+                    </div>
+                    <div class="md:col-span-3">
+                        <button id="add-to-order-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                            Add to Order
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -98,7 +97,7 @@
 
             <div class="mt-8 text-center">
                 <button id="place-order-btn" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100" disabled>
-                    Place Order via WhatsApp
+                    Place Order
                 </button>
                 <p class="text-xs text-center mt-4 text-gray-600 dark:text-gray-400">
                     Terms & Conditions: A minimum total order quantity of 5 items is required.
@@ -117,26 +116,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DATA ---
-            const menu = [
-                { id: 1, name: 'Classic Burger', price: 75.00 },
-                { id: 2, name: 'BBQ Bacon Burger', price: 88.50 },
-                { id: 3, name: 'Spicy Chicken Wings (10pcs)', price: 90.00 },
-                { id: 4, name: 'Loaded Nachos', price: 67.50 },
-                { id: 5, name: 'Margherita Pizza', price: 96.00 },
-                { id: 6, name: 'Caesar Salad', price: 57.00 },
-                { id: 7, name: 'Craft Beer', price: 42.00 },
-                { id: 8, name: 'Fountain Soda', price: 21.00 },
-                { id: 9, name: 'Garlic Fries', price: 40.50 },
-            ];
+            const dailyMenus = {
+                "Sunday": [{ id: 101, name: 'Sunday Special Jollof', price: 95.00 }, { id: 102, name: 'Grilled Chicken Platter', price: 120.00 }, { id: 103, name: 'Fountain Soda', price: 21.00 }],
+                "Monday": [{ id: 201, name: 'Banku with Tilapia', price: 85.00 }, { id: 202, name: 'Classic Burger', price: 75.00 }, { id: 203, name: 'Garlic Fries', price: 40.50 }, { id: 204, name: 'Craft Beer', price: 42.00 }],
+                "Tuesday": [{ id: 301, name: 'Waakye Special', price: 70.00 }, { id: 302, name: 'Spicy Chicken Wings (10pcs)', price: 90.00 }, { id: 303, name: 'Fountain Soda', price: 21.00 }],
+                "Wednesday": [{ id: 401, name: 'Red Red (Beans & Gari)', price: 65.00 }, { id: 402, name: 'BBQ Bacon Burger', price: 88.50 }, { id: 403, name: 'Caesar Salad', price: 57.00 }],
+                "Thursday": [{ id: 501, name: 'Fufu with Light Soup', price: 90.00 }, { id: 502, name: 'Loaded Nachos', price: 67.50 }, { id: 503, name: 'Craft Beer', price: 42.00 }],
+                "Friday": [{ id: 601, name: 'Margherita Pizza', price: 96.00 }, { id: 602, name: 'Spicy Chicken Wings (10pcs)', price: 90.00 }, { id: 603, name: 'Classic Burger', price: 75.00 }, { id: 604, name: 'Garlic Fries', price: 40.50 }],
+                "Saturday": []
+            };
             
-            const RESTAURANT_WHATSAPP_NUMBER = '233558527351'; // Your business number with country code
-
             const order = [];
             const MIN_ORDER_QUANTITY = 5;
             const TAX_RATE = 0.08;
+            let activeMenu = [];
 
-            // --- UI ELEMENTS ---
+            const menuDayTitle = document.getElementById('menu-day-title');
+            const menuSection = document.getElementById('menu-section');
             const menuItemSelect = document.getElementById('menu-item');
             const quantityInput = document.getElementById('quantity');
             const addToOrderBtn = document.getElementById('add-to-order-btn');
@@ -153,10 +149,13 @@
             const customerPhoneInput = document.getElementById('customer-phone');
             const customerAddressInput = document.getElementById('customer-address');
 
-            // --- FUNCTIONS ---
-
             function populateMenu() {
-                menu.forEach(item => {
+                menuItemSelect.innerHTML = '';
+                if (activeMenu.length === 0) {
+                    menuSection.innerHTML = `<h2 class="text-2xl font-bold text-center text-red-600">Sorry, we are closed today.</h2><p class="text-center text-gray-600">Please check back tomorrow!</p>`;
+                    return;
+                }
+                activeMenu.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = `${item.name} - GH₵${item.price.toFixed(2)}`;
@@ -166,35 +165,28 @@
 
             function renderOrder() {
                 orderItemsContainer.innerHTML = '';
-
                 if (order.length === 0) {
                     orderItemsContainer.appendChild(emptyOrderMessage);
                     totalsContainer.classList.add('hidden');
                     placeOrderBtn.disabled = true;
                     return;
                 }
-
                 emptyOrderMessage.remove();
                 totalsContainer.classList.remove('hidden');
-
                 order.forEach(orderItem => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'flex items-center justify-between bg-white/60 dark:bg-gray-700/50 p-4 rounded-lg shadow-sm';
                     itemDiv.innerHTML = `
                         <div>
                             <p class="font-semibold text-gray-800 dark:text-gray-200">${orderItem.name}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                ${orderItem.quantity} x GH₵${orderItem.price.toFixed(2)}
-                            </p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">${orderItem.quantity} x GH₵${orderItem.price.toFixed(2)}</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <p class="font-bold text-lg text-gray-900 dark:text-white">GH₵${(orderItem.quantity * orderItem.price).toFixed(2)}</p>
                             <button data-id="${orderItem.id}" class="remove-item-btn text-red-500 hover:text-red-700 dark:hover:text-red-400 font-bold text-2xl leading-none">&times;</button>
-                        </div>
-                    `;
+                        </div>`;
                     orderItemsContainer.appendChild(itemDiv);
                 });
-
                 updateTotals();
                 checkOrderMinimum();
             }
@@ -203,7 +195,6 @@
                 const subtotal = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const tax = subtotal * TAX_RATE;
                 const total = subtotal + tax;
-
                 subtotalEl.textContent = `GH₵${subtotal.toFixed(2)}`;
                 taxEl.textContent = `GH₵${tax.toFixed(2)}`;
                 totalEl.textContent = `GH₵${total.toFixed(2)}`;
@@ -216,40 +207,32 @@
             
             function showNotification(message, type = 'error') {
                 notificationMessage.textContent = message;
-                notification.className = `fixed top-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl opacity-0 transform translate-y-2`; // Reset classes
+                notification.className = `fixed top-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl opacity-0 transform translate-y-2`;
                 notification.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500');
-
                 setTimeout(() => {
                     notification.classList.remove('opacity-0', 'translate-y-2');
                     notification.classList.add('opacity-100', 'translate-y-0');
                 }, 10);
-
                 setTimeout(() => {
                     notification.classList.remove('opacity-100', 'translate-y-0');
                     notification.classList.add('opacity-0', 'translate-y-2');
                 }, 4000);
             }
 
-            // --- EVENT HANDLERS ---
-
             function handleAddToOrder() {
                 const selectedItemId = parseInt(menuItemSelect.value);
                 const quantity = parseInt(quantityInput.value);
-
                 if (isNaN(quantity) || quantity < 1) {
                     showNotification("Please enter a valid quantity.");
                     return;
                 }
-
-                const menuItem = menu.find(item => item.id === selectedItemId);
+                const menuItem = activeMenu.find(item => item.id === selectedItemId);
                 const existingOrderItem = order.find(item => item.id === selectedItemId);
-
                 if (existingOrderItem) {
                     existingOrderItem.quantity += quantity;
                 } else {
                     order.push({ ...menuItem, quantity: quantity });
                 }
-
                 quantityInput.value = '1';
                 renderOrder();
             }
@@ -258,92 +241,84 @@
                 if (event.target.classList.contains('remove-item-btn')) {
                     const itemIdToRemove = parseInt(event.target.dataset.id);
                     const itemIndex = order.findIndex(item => item.id === itemIdToRemove);
-                    
                     if (itemIndex > -1) {
                         order.splice(itemIndex, 1);
                         renderOrder();
                     }
                 }
             }
-async function handlePlaceOrder() {
-    const name = customerNameInput.value.trim();
-    const phone = customerPhoneInput.value.trim();
-    const address = customerAddressInput.value.trim();
+            
+            async function handlePlaceOrder() {
+                const name = customerNameInput.value.trim();
+                const phone = customerPhoneInput.value.trim();
+                const address = customerAddressInput.value.trim();
 
-    // 1. Validate form fields
-    if (!name || !phone || !address) {
-        showNotification("Please fill in all your details.");
-        return;
-    }
-    
-    const totalQuantity = order.reduce((sum, item) => sum + item.quantity, 0);
-    if (totalQuantity < MIN_ORDER_QUANTITY) {
-        showNotification(`Minimum order quantity is ${MIN_ORDER_QUANTITY} items.`);
-        return;
-    }
+                if (!name || !phone || !address) {
+                    showNotification("Please fill in all your details.");
+                    return;
+                }
+                
+                const totalQuantity = order.reduce((sum, item) => sum + item.quantity, 0);
+                if (totalQuantity < MIN_ORDER_QUANTITY) {
+                    showNotification(`Minimum order quantity is ${MIN_ORDER_QUANTITY} items.`);
+                    return;
+                }
 
-    // 2. Prepare the data payload for the backend
-    const subtotal = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const tax = subtotal * TAX_RATE;
-    const total = subtotal + tax;
+                const subtotal = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * TAX_RATE;
+                const total = subtotal + tax;
 
-    const payload = {
-        customer: {
-            name: name,
-            phone: phone,
-            address: address
-        },
-        items: order,
-        subtotal: subtotal.toFixed(2),
-        tax: tax.toFixed(2),
-        total: total.toFixed(2)
-    };
+                const payload = {
+                    customer: { name, phone, address },
+                    items: order,
+                    subtotal: subtotal.toFixed(2),
+                    tax: tax.toFixed(2),
+                    total: total.toFixed(2)
+                };
 
-    // 3. Send the data to your backend server
-    // IMPORTANT: Replace this URL with your actual backend server's URL from Render
-    const backendUrl = 'https://your-backend-server-url.com/api/place-order'; 
+                const backendUrl = 'https://bestcobb-api.onrender.com'; 
 
-    placeOrderBtn.disabled = true;
-    placeOrderBtn.textContent = 'Placing Order...';
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.textContent = 'Placing Order...';
 
-    try {
-        const response = await fetch(backendUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        });
+                try {
+                    const response = await fetch(backendUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
 
-        if (!response.ok) {
-            // Handle server-side errors
-            throw new Error('Could not place order. The server responded with an error.');
-        }
+                    if (!response.ok) {
+                        throw new Error('Could not place order. The server responded with an error.');
+                    }
 
-        const result = await response.json();
-        console.log('Server response:', result);
-        
-        // 4. Show success and reset the form
-        showNotification("Order placed successfully! Thank you.", 'success');
-        
-        order.length = 0;
-        customerNameInput.value = '';
-        customerPhoneInput.value = '';
-        customerAddressInput.value = '';
-        renderOrder();
+                    const result = await response.json();
+                    console.log('Server response:', result);
+                    
+                    showNotification("Order placed successfully! Thank you.", 'success');
+                    
+                    order.length = 0;
+                    customerNameInput.value = '';
+                    customerPhoneInput.value = '';
+                    customerAddressInput.value = '';
+                    renderOrder();
 
-    } catch (error) {
-        console.error('Error placing order:', error);
-        showNotification("Failed to place order. Please try again later.", 'error');
-    } finally {
-        // Re-enable the button and reset its text correctly
-        placeOrderBtn.textContent = 'Place Order';
-        // The checkOrderMinimum function will correctly disable the button if the cart is empty
-        checkOrderMinimum();
-    }
-}
+                } catch (error) {
+                    console.error('Error placing order:', error);
+                    showNotification("Failed to place order. Please try again later.", 'error');
+                } finally {
+                    placeOrderBtn.textContent = 'Place Order';
+                    checkOrderMinimum();
+                }
+            }
 
-            // --- INITIALIZATION ---
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const today = new Date();
+            const currentDayName = dayNames[today.getDay()];
+            
+            activeMenu = dailyMenus[currentDayName] || [];
+            menuDayTitle.textContent = `Today's Menu (${currentDayName})`;
+            
             addToOrderBtn.addEventListener('click', handleAddToOrder);
             orderItemsContainer.addEventListener('click', handleRemoveItem);
             placeOrderBtn.addEventListener('click', handlePlaceOrder);
@@ -354,5 +329,3 @@ async function handlePlaceOrder() {
     </script>
 </body>
 </html>
-
-Update function to connect backend
