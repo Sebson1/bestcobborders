@@ -265,16 +265,43 @@
                     }
                 }
             }
-            
 async function handlePlaceOrder() {
     const name = customerNameInput.value.trim();
     const phone = customerPhoneInput.value.trim();
     const address = customerAddressInput.value.trim();
 
-    // ... (validation code) ...
+    // 1. Validate form fields
+    if (!name || !phone || !address) {
+        showNotification("Please fill in all your details.");
+        return;
+    }
+    
+    const totalQuantity = order.reduce((sum, item) => sum + item.quantity, 0);
+    if (totalQuantity < MIN_ORDER_QUANTITY) {
+        showNotification(`Minimum order quantity is ${MIN_ORDER_QUANTITY} items.`);
+        return;
+    }
 
+    // 2. Prepare the data payload for the backend
+    const subtotal = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const tax = subtotal * TAX_RATE;
+    const total = subtotal + tax;
+
+    const payload = {
+        customer: {
+            name: name,
+            phone: phone,
+            address: address
+        },
+        items: order,
+        subtotal: subtotal.toFixed(2),
+        tax: tax.toFixed(2),
+        total: total.toFixed(2)
+    };
+
+    // 3. Send the data to your backend server
     // IMPORTANT: Replace this URL with your actual backend server's URL from Render
-    const backendUrl = https://bestcobb-api.onrender.com; 
+    const backendUrl = 'https://your-backend-server-url.com/api/place-order'; 
 
     placeOrderBtn.disabled = true;
     placeOrderBtn.textContent = 'Placing Order...';
@@ -288,15 +315,33 @@ async function handlePlaceOrder() {
             body: JSON.stringify(payload),
         });
 
-        // ... (and the rest of the new function that handles the server response) ...
+        if (!response.ok) {
+            // Handle server-side errors
+            throw new Error('Could not place order. The server responded with an error.');
+        }
+
+        const result = await response.json();
+        console.log('Server response:', result);
+        
+        // 4. Show success and reset the form
+        showNotification("Order placed successfully! Thank you.", 'success');
+        
+        order.length = 0;
+        customerNameInput.value = '';
+        customerPhoneInput.value = '';
+        customerAddressInput.value = '';
+        renderOrder();
 
     } catch (error) {
-        // ... (error handling) ...
+        console.error('Error placing order:', error);
+        showNotification("Failed to place order. Please try again later.", 'error');
     } finally {
-        // ... (resetting the button) ...
+        // Re-enable the button and reset its text correctly
+        placeOrderBtn.textContent = 'Place Order';
+        // The checkOrderMinimum function will correctly disable the button if the cart is empty
+        checkOrderMinimum();
     }
 }
-            }
 
             // --- INITIALIZATION ---
             addToOrderBtn.addEventListener('click', handleAddToOrder);
