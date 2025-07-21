@@ -276,7 +276,8 @@
                     total: total.toFixed(2)
                 };
 
-                const backendUrl = 'https://bestcobb-api.onrender.com'; 
+                // CORRECTED: Added the /api/place-order path to the URL
+                const backendUrl = 'https://bestcobb-api.onrender.com/api/place-order'; 
 
                 placeOrderBtn.disabled = true;
                 placeOrderBtn.textContent = 'Placing Order...';
