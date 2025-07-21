@@ -11,8 +11,13 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #99f6e4;
-            background-image: linear-gradient(to top right, #99f6e4, #67e8f9, #60a5fa);
+            /* Fallback color */
+            background-color: #1a202c; /* gray-900 */
+            /* UPDATED: New football-focused background image */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         .title-font {
             font-family: 'Poppins', sans-serif;
@@ -21,7 +26,12 @@
             transition: opacity 0.5s, transform 0.5s;
         }
         .custom-shadow {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        /* Style for invalid (empty required) fields */
+        input:invalid {
+            border-color: #ef4444; /* red-500 */
+            box-shadow: 0 0 0 2px #fecaca; /* red-200 */
         }
     </style>
 </head>
@@ -30,8 +40,8 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
         
         <header class="text-center mb-8">
-            <h1 class="title-font text-5xl sm:text-6xl font-extrabold text-white" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Bestcobb Sports Bar & Grill</h1>
-            <p class="mt-2 text-lg text-white/90 font-medium">Your Favorite Game Day Destination</p>
+            <h1 class="title-font text-5xl sm:text-6xl font-extrabold text-white" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.7);">Bestcobb Sports Bar Restaurant & Grill</h1>
+            <p class="mt-2 text-lg text-white/90 font-medium" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Your Favorite Game Day Destination</p>
         </header>
 
         <main class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl custom-shadow p-6 sm:p-8">
@@ -64,7 +74,7 @@
                     </div>
                     <div>
                         <label for="customer-phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Phone</label>
-                        <input type="tel" id="customer-phone" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3" placeholder="024 123 4567">
+                        <input type="tel" id="customer-phone" required pattern="[0-9]*" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3" placeholder="0241234567">
                     </div>
                     <div class="md:col-span-2">
                         <label for="customer-address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Address</label>
@@ -276,7 +286,6 @@
                     total: total.toFixed(2)
                 };
 
-                // CORRECTED: Added the /api/place-order path to the URL
                 const backendUrl = 'https://bestcobb-api.onrender.com/api/place-order'; 
 
                 placeOrderBtn.disabled = true;
