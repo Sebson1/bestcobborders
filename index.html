@@ -266,54 +266,36 @@
                 }
             }
             
-            function handlePlaceOrder() {
-                const name = customerNameInput.value.trim();
-                const phone = customerPhoneInput.value.trim();
-                const address = customerAddressInput.value.trim();
+async function handlePlaceOrder() {
+    const name = customerNameInput.value.trim();
+    const phone = customerPhoneInput.value.trim();
+    const address = customerAddressInput.value.trim();
 
-                if (!name || !phone || !address) {
-                    showNotification("Please fill in all your details before placing an order.");
-                    return;
-                }
-                
-                const totalQuantity = order.reduce((sum, item) => sum + item.quantity, 0);
-                if (totalQuantity < MIN_ORDER_QUANTITY) {
-                    showNotification(`Minimum order quantity is ${MIN_ORDER_QUANTITY} items. You have ${totalQuantity}.`);
-                    return;
-                }
+    // ... (validation code) ...
 
-                const subtotal = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const tax = subtotal * TAX_RATE;
-                const total = subtotal + tax;
-                
-                let message = `*New Order from ${name}*\n\n`;
-                message += `*Customer Details:*\n`;
-                message += `Name: ${name}\n`;
-                message += `Phone: ${phone}\n`;
-                message += `Address: ${address}\n\n`;
-                message += `*Order Items:*\n`;
-                order.forEach(item => {
-                    message += `- ${item.quantity}x ${item.name} @ GH₵${item.price.toFixed(2)}\n`;
-                });
-                message += `\n*Subtotal:* GH₵${subtotal.toFixed(2)}\n`;
-                message += `*Tax:* GH₵${tax.toFixed(2)}\n`;
-                message += `*GRAND TOTAL:* GH₵${total.toFixed(2)}\n\n`;
-                
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappUrl = `https://wa.me/${RESTAURANT_WHATSAPP_NUMBER}?text=${encodedMessage}`;
-                
-                // Open WhatsApp in a new tab
-                window.open(whatsappUrl, '_blank');
-                
-                // Show confirmation message
-                showNotification("Please press 'send' in WhatsApp to confirm your order.", 'success');
-                
-                // Reset the form
-                order.length = 0;
-                customerNameInput.value = '';
-                customerPhoneInput.value = '';
-                customerAddressInput.value = '';
-                renderOrder();
+    // IMPORTANT: Replace this URL with your actual backend server's URL from Render
+    const backendUrl = https://bestcobb-api.onrender.com; 
+
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.textContent = 'Placing Order...';
+
+    try {
+        const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        // ... (and the rest of the new function that handles the server response) ...
+
+    } catch (error) {
+        // ... (error handling) ...
+    } finally {
+        // ... (resetting the button) ...
+    }
+}
             }
 
             // --- INITIALIZATION ---
@@ -327,3 +309,5 @@
     </script>
 </body>
 </html>
+
+Update function to connect backend
