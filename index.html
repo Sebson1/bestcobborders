@@ -12,7 +12,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #1a202c;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            /* UPDATED: New background image for a sports bar and restaurant atmosphere */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -39,6 +40,7 @@
         <header class="text-center mb-8">
             <h1 class="title-font text-5xl sm:text-6xl font-extrabold text-white" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.7);">Bestcobb Sports Bar Restaurant & Grill</h1>
             <p class="mt-2 text-lg text-white/90 font-medium" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Your Favorite Game Day Destination</p>
+            <p class="mt-4 text-xl text-yellow-300 font-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.6);">For Bulk Purchasing & Corporate Workers Only</p>
         </header>
 
         <main class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl custom-shadow p-6 sm:p-8">
@@ -132,7 +134,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // UPDATED: New menu based on the provided image
             const dailyMenus = {
                 "Monday": [
                     { id: 201, name: 'Vegetable Stew with Plain Rice and Fish', price: 40.00 }, 
@@ -159,8 +160,8 @@
                     { id: 602, name: 'Braised Rice with Hot Pepper and Egg', price: 40.00 }, 
                     { id: 603, name: 'Plain Rice with Stew', price: 40.00 }
                 ],
-                "Saturday": [], // No menu provided
-                "Sunday": []    // No menu provided
+                "Saturday": [],
+                "Sunday": []
             };
             
             const order = [];
