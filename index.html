@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bestcobb Sports Bar - Online Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -84,10 +83,6 @@
                         <input type="tel" id="customer-phone" required pattern="[0-9]*" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3" placeholder="0241234567">
                     </div>
                     <div class="md:col-span-2">
-                         <label for="customer-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                        <input type="email" id="customer-email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3" placeholder="you@example.com">
-                    </div>
-                    <div class="md:col-span-2">
                         <label for="customer-address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Delivery Address</label>
                         <input type="text" id="customer-address" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-cyan-500 focus:border-cyan-500 p-3" placeholder="123 Mango Street, Accra">
                     </div>
@@ -116,27 +111,9 @@
                 </div>
             </div>
 
-            <div id="payment-section" class="mt-8 pt-6 border-t border-gray-900/10 dark:border-white/10">
-                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Payment Method</h2>
-                <div class="space-y-4">
-                    <div class="flex items-center p-4 border rounded-lg bg-white/60">
-                        <input id="paystack" name="payment-method" type="radio" value="Pay Online with Paystack" class="h-4 w-4 text-cyan-600 border-gray-300 focus:ring-cyan-500">
-                        <label for="paystack" class="ml-3 block text-md font-medium text-gray-800">
-                            Pay Online with Paystack
-                        </label>
-                    </div>
-                    <div class="flex items-center p-4 border rounded-lg bg-white/60">
-                        <input id="cash-on-delivery" name="payment-method" type="radio" value="Cash on Delivery" class="h-4 w-4 text-cyan-600 border-gray-300 focus:ring-cyan-500">
-                        <label for="cash-on-delivery" class="ml-3 block text-md font-medium text-gray-800">
-                            Cash on Delivery
-                        </label>
-                    </div>
-                </div>
-            </div>
-
             <div class="mt-8 text-center">
                 <button id="place-order-btn" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg text-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:scale-100" disabled>
-                    Place Order
+                    Place Order (Cash on Delivery)
                 </button>
                 <p class="text-xs text-center mt-4 text-gray-600 dark:text-gray-400">
                     Terms & Conditions: A minimum total order quantity of 5 items is required.
@@ -155,8 +132,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const PAYSTACK_PUBLIC_KEY = "YOUR_PAYSTACK_PUBLIC_KEY";
-
             const dailyMenus = {
                 "Sunday": [{ id: 101, name: 'Sunday Special Jollof', price: 95.00 }, { id: 102, name: 'Grilled Chicken Platter', price: 120.00 }],
                 "Monday": [{ id: 201, name: 'Banku with Tilapia', price: 85.00 }, { id: 202, name: 'Classic Burger', price: 75.00 }],
@@ -190,7 +165,6 @@
             const notificationMessage = document.getElementById('notification-message');
             const customerNameInput = document.getElementById('customer-name');
             const customerPhoneInput = document.getElementById('customer-phone');
-            const customerEmailInput = document.getElementById('customer-email');
             const customerAddressInput = document.getElementById('customer-address');
 
             function setupDatePicker() {
@@ -295,34 +269,8 @@
                     if (itemIndex > -1) { order.splice(itemIndex, 1); renderOrder(); }
                 }
             }
-            
-            function payWithPaystack(payload) {
-                const totalInKobo = Math.round(parseFloat(payload.total) * 100);
 
-                const handler = PaystackPop.setup({
-                    key: PAYSTACK_PUBLIC_KEY,
-                    email: payload.customer.email,
-                    amount: totalInKobo,
-                    currency: 'GHS',
-                    ref: `BCB-${Date.now()}`,
-                    callback: function(response) {
-                        console.log('Paystack payment successful. Reference:', response.reference);
-                        sendOrderToBackend(payload, response.reference);
-                    },
-                    onClose: function() {
-                        showNotification('Payment window closed.', 'error');
-                        placeOrderBtn.disabled = false;
-                        placeOrderBtn.textContent = 'Proceed to Payment';
-                    }
-                });
-                handler.openIframe();
-            }
-
-            async function sendOrderToBackend(payload, paystackReference = null) {
-                if (paystackReference) {
-                    payload.paystackReference = paystackReference;
-                }
-
+            async function sendOrderToBackend(payload) {
                 const backendUrl = 'https://bestcobb-api.onrender.com/api/place-order'; 
 
                 placeOrderBtn.disabled = true;
@@ -348,17 +296,14 @@
                     order.length = 0;
                     customerNameInput.value = '';
                     customerPhoneInput.value = '';
-                    customerEmailInput.value = '';
                     customerAddressInput.value = '';
-                    const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked');
-                    if (selectedPaymentMethod) selectedPaymentMethod.checked = false;
                     renderOrder();
 
                 } catch (error) {
                     console.error('Error placing order:', error);
                     showNotification(error.message || "Failed to place order. Please try again later.", 'error');
                 } finally {
-                    placeOrderBtn.textContent = 'Place Order';
+                    placeOrderBtn.textContent = 'Place Order (Cash on Delivery)';
                     checkOrderMinimum();
                 }
             }
@@ -366,21 +311,13 @@
             async function handlePlaceOrder() {
                 const name = customerNameInput.value.trim();
                 const phone = customerPhoneInput.value.trim();
-                const email = customerEmailInput.value.trim();
                 const address = customerAddressInput.value.trim();
                 const orderDate = orderDatePicker.value;
-                const paymentMethodInput = document.querySelector('input[name="payment-method"]:checked');
 
-                if (!name || !phone || !email || !address) {
-                    showNotification("Please fill in all your details, including email.");
+                if (!name || !phone || !address) {
+                    showNotification("Please fill in all your details.");
                     return;
                 }
-
-                if (!paymentMethodInput) {
-                    showNotification("Please select a payment method.");
-                    return;
-                }
-                const paymentMethod = paymentMethodInput.value;
                 
                 const totalQuantity = order.reduce((sum, item) => sum + item.quantity, 0);
                 if (totalQuantity < MIN_ORDER_QUANTITY) {
@@ -393,38 +330,22 @@
                 const total = subtotal + tax;
 
                 const payload = {
-                    customer: { name, phone, email, address },
+                    customer: { name, phone, address },
                     items: order,
                     subtotal: subtotal.toFixed(2),
                     tax: tax.toFixed(2),
                     total: total.toFixed(2),
                     orderDate: orderDate,
-                    paymentMethod: paymentMethod
+                    paymentMethod: "Cash on Delivery" // Hardcoded payment method
                 };
 
-                if (paymentMethod === 'Pay Online with Paystack') {
-                    payWithPaystack(payload);
-                } else {
-                    sendOrderToBackend(payload);
-                }
-            }
-
-            function updateButtonText() {
-                const paymentMethodInput = document.querySelector('input[name="payment-method"]:checked');
-                if (paymentMethodInput && paymentMethodInput.value === 'Pay Online with Paystack') {
-                    placeOrderBtn.textContent = 'Proceed to Payment';
-                } else {
-                    placeOrderBtn.textContent = 'Place Order';
-                }
+                sendOrderToBackend(payload);
             }
             
             setupDatePicker();
             updateActiveMenu(orderDatePicker.value);
 
             orderDatePicker.addEventListener('change', (e) => updateActiveMenu(e.target.value));
-            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
-                radio.addEventListener('change', updateButtonText);
-            });
             
             addToOrderBtn.addEventListener('click', handleAddToOrder);
             orderItemsContainer.addEventListener('click', handleRemoveItem);
