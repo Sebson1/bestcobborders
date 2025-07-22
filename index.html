@@ -132,14 +132,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // UPDATED: New menu based on the provided image
             const dailyMenus = {
-                "Sunday": [{ id: 101, name: 'Sunday Special Jollof', price: 95.00 }, { id: 102, name: 'Grilled Chicken Platter', price: 120.00 }],
-                "Monday": [{ id: 201, name: 'Banku with Tilapia', price: 85.00 }, { id: 202, name: 'Classic Burger', price: 75.00 }],
-                "Tuesday": [{ id: 301, name: 'Waakye Special', price: 70.00 }, { id: 302, name: 'Spicy Chicken Wings (10pcs)', price: 90.00 }],
-                "Wednesday": [{ id: 401, name: 'Red Red (Beans & Gari)', price: 65.00 }, { id: 402, name: 'BBQ Bacon Burger', price: 88.50 }],
-                "Thursday": [{ id: 501, name: 'Fufu with Light Soup', price: 90.00 }, { id: 502, name: 'Loaded Nachos', price: 67.50 }],
-                "Friday": [{ id: 601, name: 'Margherita Pizza', price: 96.00 }, { id: 602, name: 'Classic Burger', price: 75.00 }],
-                "Saturday": []
+                "Monday": [
+                    { id: 201, name: 'Vegetable Stew with Plain Rice and Fish', price: 40.00 }, 
+                    { id: 202, name: 'Goat Soup with Plain Rice', price: 50.00 }, 
+                    { id: 203, name: 'Vegetable Stew with Yam and Fry Beef', price: 40.00 }
+                ],
+                "Tuesday": [
+                    { id: 301, name: 'Jollof Rice with Chicken and Coleslaw', price: 40.00 }, 
+                    { id: 302, name: 'Boiled Yam with Palava Sauce and Fish', price: 40.00 }, 
+                    { id: 303, name: 'Yam Chips with Fish and Hot Pepper', price: 40.00 }
+                ],
+                "Wednesday": [
+                    { id: 401, name: 'Fufu with Goat Soup', price: 50.00 }, 
+                    { id: 402, name: 'Stir-Fry Spaghetti', price: 40.00 }, 
+                    { id: 403, name: 'Fried Rice with Chicken', price: 40.00 }
+                ],
+                "Thursday": [
+                    { id: 501, name: 'Rice Ball with Groundnut Soup', price: 40.00 }, 
+                    { id: 502, name: 'Waakye with Stew and Fish', price: 40.00 }, 
+                    { id: 503, name: 'Beans and Plantain with Fish', price: 40.00 }
+                ],
+                "Friday": [
+                    { id: 601, name: 'Banku with Okro or Hot Pepper with Fish', price: 40.00 }, 
+                    { id: 602, name: 'Braised Rice with Hot Pepper and Egg', price: 40.00 }, 
+                    { id: 603, name: 'Plain Rice with Stew', price: 40.00 }
+                ],
+                "Saturday": [], // No menu provided
+                "Sunday": []    // No menu provided
             };
             
             const order = [];
@@ -336,7 +357,7 @@
                     tax: tax.toFixed(2),
                     total: total.toFixed(2),
                     orderDate: orderDate,
-                    paymentMethod: "Cash on Delivery" // Hardcoded payment method
+                    paymentMethod: "Cash on Delivery"
                 };
 
                 sendOrderToBackend(payload);
